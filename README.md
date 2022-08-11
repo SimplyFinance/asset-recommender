@@ -72,9 +72,9 @@ customer IDs to a list of assets that are recommended for them, on that date.
 
 ## Docker
 
-In order to build and run the Docker image, navigate to `asset-recommender/src/main/resources` and run 
+In order to build and run the Docker image for the DB, navigate to `asset-recommender/src/main/resources` and run 
 
-`docker run -it -p 127.0.0.1:1433:1433/tcp $(docker build -q .)`
+`docker build -t asset-recommender . && docker run -it -p 127.0.0.1:1433:1433/tcp asset-recommender`
 
 ## Maven
 
