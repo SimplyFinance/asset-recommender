@@ -32,10 +32,11 @@ public class RecommendationControllerIT {
     ResponseEntity<String> response =
             restTemplate.exchange(TEST_ENDPOINT_URL, HttpMethod.GET, null, String.class, date);
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(
-            "{\"2\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"type\":\"AGRICULTURE\",\"deal\":null},{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"type\":\"AGRICULTURE\",\"deal\":null}],\"5\":[{\"id\":10,\"name\":\"Biomass Boiler\",\"cost\":75000.0,\"type\":\"WASTE\",\"deal\":null}]}",
-            response.getBody());
+      assertEquals(HttpStatus.OK, response.getStatusCode());
+        System.out.println(response.getBody());
+        assertEquals(
+                "{\"2\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null},{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"5\":[{\"id\":10,\"name\":\"Biomass Boiler\",\"cost\":75000.0,\"assetType\":{\"id\":4,\"name\":\"WASTE\"},\"deal\":null}]}",
+                response.getBody());
   }
 
   @Test
@@ -44,10 +45,13 @@ public class RecommendationControllerIT {
     ResponseEntity<String> response =
             restTemplate.exchange(TEST_ENDPOINT_URL, HttpMethod.GET, null, String.class, date);
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(
-            "{\"1\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"type\":\"AGRICULTURE\",\"deal\":null}],\"2\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"type\":\"AGRICULTURE\",\"deal\":null},{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"type\":\"AGRICULTURE\",\"deal\":null}]}",
-            response.getBody());
+   
+     assertEquals(HttpStatus.OK, response.getStatusCode());
+        String expected = "{\"1\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"2\":[{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null},{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}]}";
+        String actual = response.getBody();
+        System.out.println(expected);
+        System.out.println(actual);
+        assertEquals(expected, actual);
   }
 
   @Test
@@ -57,9 +61,41 @@ public class RecommendationControllerIT {
             restTemplate.exchange(TEST_ENDPOINT_URL, HttpMethod.GET, null, String.class, date);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(
-            "{\"1\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"type\":\"AGRICULTURE\",\"deal\":null}],\"2\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"type\":\"AGRICULTURE\",\"deal\":null},{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"type\":\"AGRICULTURE\",\"deal\":null}],\"5\":[{\"id\":10,\"name\":\"Biomass Boiler\",\"cost\":75000.0,\"type\":\"WASTE\",\"deal\":null}]}",
-            response.getBody());
+   
+        String expected = "{\"1\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"2\":[{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null},{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"5\":[{\"id\":10,\"name\":\"Biomass Boiler\",\"cost\":75000.0,\"assetType\":{\"id\":4,\"name\":\"WASTE\"},\"deal\":null}]}";
+        String actual = response.getBody();
+        System.out.println(expected);
+        System.out.println(actual);
+        assertEquals(expected, actual);
   }
+  
+  
+   @Test
+    public void getRecommendations4() {
+        LocalDate date = LocalDate.of(2016, 9, 28);
+        ResponseEntity<String> response =
+                restTemplate.exchange(TEST_ENDPOINT_URL, HttpMethod.GET, null, String.class, date);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        String expected = "{\"1\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"2\":[{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null},{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}]}";
+        String actual = response.getBody();
+        System.out.println(expected);
+        System.out.println(actual);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getRecommendations5() {
+        LocalDate date = LocalDate.of(2015, 1, 30);
+        ResponseEntity<String> response =
+                restTemplate.exchange(TEST_ENDPOINT_URL, HttpMethod.GET, null, String.class, date);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        String expected = "{\"1\":[{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"2\":[{\"id\":4,\"name\":\"Sprinkler\",\"cost\":125000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null},{\"id\":3,\"name\":\"Baler\",\"cost\":55000.0,\"assetType\":{\"id\":1,\"name\":\"AGRICULTURE\"},\"deal\":null}],\"5\":[{\"id\":10,\"name\":\"Biomass Boiler\",\"cost\":75000.0,\"assetType\":{\"id\":4,\"name\":\"WASTE\"},\"deal\":null}]}";
+        String actual = response.getBody();
+        System.out.println(expected);
+        System.out.println(actual);
+        
+  
 
 }

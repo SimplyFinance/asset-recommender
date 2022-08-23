@@ -14,13 +14,21 @@ CREATE TABLE [deal]
   [end_date]   DATETIME2           NOT NULL
 );
 
+CREATE TABLE [asset_type]
+(
+  [id]         INT IDENTITY (1, 1) NOT NULL
+    PRIMARY KEY,
+  [name] VARCHAR(100)           NOT NULL,
+);
+
 CREATE TABLE [asset]
 (
   [id]      INT IDENTITY (1, 1) NOT NULL
     PRIMARY KEY,
   [name]    VARCHAR(100)        NOT NULL,
   [cost]    DECIMAL(18, 2)      NOT NULL,
-  [type]    VARCHAR(30)         NOT NULL,
+  [type_id]    INT  NOT NULL
+    FOREIGN KEY REFERENCES [asset_type] ([id]),
   [deal_id] INT
     FOREIGN KEY REFERENCES [deal] ([id])
 );
@@ -52,18 +60,26 @@ VALUES
   ('2022-05-17 00:00:00', '2024-08-17 00:00:00');
 
 INSERT
-INTO [asset] ([name], [cost], [type], [deal_id])
+INTO [asset_type] ([name])
 VALUES
-  ('Tractor', 50000, 'AGRICULTURE', 1),
-  ('Combine Harvester', 100000, 'AGRICULTURE', 1),
-  ('Baler', 55000, 'AGRICULTURE', NULL),
-  ('Sprinkler', 125000, 'AGRICULTURE', NULL),
-  ('Taxi 1', 20000, 'TRANSPORT', 2),
-  ('Taxi 2', 30000, 'TRANSPORT', 2),
-  ('Bus', 250000, 'TRANSPORT', 2),
-  ('Ferry', 1500000, 'TRANSPORT', 3),
-  ('Garbage Truck', 170000, 'WASTE', 4),
-  ('Biomass Boiler', 75000, 'WASTE', NULL);
+  ('AGRICULTURE'),
+  ('TRANSPORT'),
+  ('CONSTRUCTION'),
+  ('WASTE');
+
+INSERT
+INTO [asset] ([name], [cost], [type_id], [deal_id])
+VALUES
+  ('Tractor', 50000, 1, 1),
+  ('Combine Harvester', 100000, 1, 1),
+  ('Baler', 55000, 1, NULL),
+  ('Sprinkler', 125000, 1, NULL),
+  ('Taxi 1', 20000, 2, 2),
+  ('Taxi 2', 30000, 2, 2),
+  ('Bus', 250000, 2, 2),
+  ('Ferry', 1500000, 2, 3),
+  ('Garbage Truck', 170000, 4, 4),
+  ('Biomass Boiler', 75000, 4, NULL);
 
 INSERT
 INTO [customer] ([name], [affordability])

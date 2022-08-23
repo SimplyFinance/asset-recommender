@@ -13,29 +13,20 @@ import java.util.List;
 @Service
 public class AssetService {
 
-  private final AssetRepository assetRepository;
+    private final AssetRepository assetRepository;
 
-  private final DealRepository dealRepository;
-
-  @Autowired
-  public AssetService(AssetRepository assetRepository, DealRepository dealRepository) {
-    this.assetRepository = assetRepository;
-    this.dealRepository = dealRepository;
-  }
-
-
-  public List<Asset> getUnsoldAssets() {
-    List<Deal> deals = dealRepository.findAll();
-    List<Asset> assets = assetRepository.findAll();
-    List<Asset> unsoldAssets = new ArrayList<>(assets);
-
-    for (Deal deal : deals) {
-      for (Asset asset : deal.getAssets()) {
-        unsoldAssets.remove(asset);
-      }
+    @Autowired
+    public AssetService(AssetRepository assetRepository) {
+        this.assetRepository = assetRepository;
     }
 
-    return unsoldAssets;
-  }
+    /**
+     * Find Unsold Assets which will have deal_id NULL.
+     *
+     * @return List of Assets.
+     */
+    public List<Asset> getUnsoldAssets() {
+        return assetRepository.findByDealIdIsNull();
+    }
 
 }
