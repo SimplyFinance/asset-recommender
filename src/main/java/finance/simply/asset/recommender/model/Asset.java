@@ -1,11 +1,20 @@
 package finance.simply.asset.recommender.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "asset")
+/**
+ * Entity class for an asset.
+ */
 public class Asset {
 
+  /**
+   * Enum for the different asset types.
+   */
   public enum Type {
     AGRICULTURE,
     TRANSPORT,
@@ -27,47 +36,4 @@ public class Asset {
   @Column(name = "type")
   @Enumerated(EnumType.STRING)
   private Type type;
-
-  public Asset() {
-  }
-
-  public Asset(Integer id, String name, double cost, Type type) {
-    this.id = id;
-    this.name = name;
-    this.cost = cost;
-    this.type = type;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public double getCost() {
-    return cost;
-  }
-
-  public void setCost(double cost) {
-    this.cost = cost;
-  }
-
-  public Type getType() {
-    return type;
-  }
-
-  public void setType(Type type) {
-    this.type = type;
-  }
-
 }
