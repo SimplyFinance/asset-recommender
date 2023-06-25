@@ -29,7 +29,7 @@ public class AssetControllerIT {
   private TestRestTemplate restTemplate;
 
   @Test
-  void getAssetsWithCostUnder() {
+  void getAssetsWithCostUnder_happyPath_returnsCorrectMapOfAssets() {
     ResponseEntity<List<Asset>> response = restTemplate.exchange(ASSETS_WITH_COST_UNDER_URL,
                                                                  HttpMethod.GET,
                                                                  null,
@@ -41,7 +41,7 @@ public class AssetControllerIT {
   }
 
   @Test
-  void getAssetsWithCostUnder_noAssets() {
+  void getAssetsWithCostUnder_failure_returnsEmptyListOfAssets() {
     ResponseEntity<List<Asset>> response = restTemplate.exchange(ASSETS_WITH_COST_UNDER_URL,
                                                                  HttpMethod.GET,
                                                                  null,
@@ -53,7 +53,7 @@ public class AssetControllerIT {
   }
 
   @Test
-  void getSumOfCostsForAssetTypes() {
+  void getSumOfCostsForAssetTypes_happyPathComparision_returnsCorrectMapOfAssets() {
     ResponseEntity<Map<Asset.Type, Double>> response = restTemplate.exchange(SUM_OF_COSTS_FOR_ASSET_TYPES_URL,
                                                                              HttpMethod.GET,
                                                                              null,
