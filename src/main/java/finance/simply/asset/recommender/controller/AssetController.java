@@ -40,7 +40,7 @@ public class AssetController {
    */
   @GetMapping
   public ResponseEntity<List<Asset>> getAssetsWithCostUnder(@RequestParam double maxCost) {
-    List<Asset> assets = assetRepository.findByCostLessThanEqualOrderByCostAsc(maxCost);
+    final List<Asset> assets = assetRepository.findByCostLessThanEqualOrderByCostAsc(maxCost);
 
     if (assets.isEmpty()) {
       return new ResponseEntity<>(Collections.emptyList(), HttpStatus.NOT_FOUND);
@@ -56,20 +56,30 @@ public class AssetController {
    */
   @GetMapping("/sum-for-types")
   public ResponseEntity<Map<Asset.Type, Double>> getSumOfCostsForAssetTypes() {
-    Map<Asset.Type, Double> assetTypeCostsMap = new EnumMap<>(Asset.Type.class);
-
-    for (Asset.Type type : Asset.Type.values()) {
-      assetTypeCostsMap.put(type, 0.0);
-    }
+    final Map<Asset.Type, Double> assetTypeCostsMap = getMap();
 
     final List<Object[]> results = assetRepository.findSumOfCostsForAssetTypes();
     for (Object[] result : results) {
-      Asset.Type type = (Asset.Type) result[0];
+      final Asset.Type type = (Asset.Type) result[0];
       final Double sum = (Double) result[1];
       assetTypeCostsMap.put(type, sum);
     }
 
     return ResponseEntity.ok(assetTypeCostsMap);
+  }
+
+  /**
+   * Create asset type costs map
+   *
+   * @return Map of {@link Asset.Type} and Double
+   */
+  private static Map<Asset.Type, Double> getMap() {
+    Map<Asset.Type, Double> assetTypeCostsMap = new EnumMap<>(Asset.Type.class);
+
+    for (Asset.Type type : Asset.Type.values()) {
+      assetTypeCostsMap.put(type, 0.0);
+    }
+    return assetTypeCostsMap;
   }
 
 }
