@@ -1,7 +1,7 @@
 package finance.simply.asset.recommender.controller;
 
 import finance.simply.asset.recommender.model.Asset;
-import finance.simply.asset.recommender.repository.AssetRepository;
+import finance.simply.asset.recommender.services.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,30 +10,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/asset")
 public class AssetController {
 
-    private final AssetRepository assetRepository;
+    private final AssetService assetService;
 
     @Autowired
-    public AssetController(AssetRepository assetRepository) {
-        this.assetRepository = assetRepository;
+    public AssetController(AssetService assetService) {
+        this.assetService = assetService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Asset>> getAssetsWithCostUnder(
-            @RequestParam(required = true) double maxCost) {
-        final List<Asset> assets = assetRepository.findAll().stream()
-                .filter(asset -> asset.getCost() <= maxCost)
-                .sorted(Comparator.comparing(Asset::getName))
-                .collect(Collectors.toList());
+    public ResponseEntity<List<Asset>> getAssetsWithCostUnder(@RequestParam(required = true) double maxCost) {
+        final List<Asset> assets = assetService.getAssetsWithCostUnder(maxCost);
         return assets.isEmpty()
                 ? ResponseEntity.status(HttpStatus.NOT_FOUND).body(assets)
                 : ResponseEntity.ok(assets);
