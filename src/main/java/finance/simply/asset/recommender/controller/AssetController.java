@@ -3,6 +3,7 @@ package finance.simply.asset.recommender.controller;
 import finance.simply.asset.recommender.model.Asset;
 import finance.simply.asset.recommender.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,9 @@ public class AssetController {
                 .filter(asset -> asset.getCost() <= maxCost)
                 .sorted(Comparator.comparing(Asset::getName))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(assets);
+        return assets.isEmpty()
+                ? ResponseEntity.status(HttpStatus.NOT_FOUND).body(assets)
+                : ResponseEntity.ok(assets);
     }
 
     @GetMapping("/sum-for-types")
