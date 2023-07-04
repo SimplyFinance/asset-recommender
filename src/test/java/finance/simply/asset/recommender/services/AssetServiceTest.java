@@ -9,12 +9,13 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class AssetServiceTests {
+class AssetServiceTest {
 
     private AssetRepository assetRepository;
 
@@ -30,11 +31,7 @@ class AssetServiceTests {
     @Test
     void returnsAssetsWhereCostIsLessOrEqualToMaxCost() {
         final double maxCost = 75000;
-        final List<Asset> assets = Arrays.asList(
-                new Asset(1, "Asset 1", 50000, Asset.Type.AGRICULTURE),
-                new Asset(2, "Asset 2", 75000, Asset.Type.AGRICULTURE)
-        );
-        when(assetRepository.findAll()).thenReturn(assets);
+        when(assetRepository.findAll()).thenReturn(getAllAssets());
 
         final List<Asset> result = assetService.getAssetsWithCostUnder(maxCost);
 
@@ -51,5 +48,40 @@ class AssetServiceTests {
         final List<Asset> result = assetService.getAssetsWithCostUnder(maxCost);
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void returnsSumOfCostsForAllAssetTypesInTheRepositoryAndAddsTheMissingAssetsInTheRepository() {
+        when(assetRepository.findAll()).thenReturn(getAllAssets());
+
+        final Map<Asset.Type, Double> assetTypeCostsMap = assetService.getSumOfCostsForAllAssetTypesInTheRepository();
+
+        assertThat(assetTypeCostsMap).hasSize(4);
+        assertThat(assetTypeCostsMap.get(Asset.Type.AGRICULTURE)).isEqualTo(50000);
+        assertThat(assetTypeCostsMap.get(Asset.Type.TRANSPORT)).isEqualTo(75000);
+        assertThat(assetTypeCostsMap.get(Asset.Type.CONSTRUCTION)).isEqualTo(100000);
+        assertThat(assetTypeCostsMap.get(Asset.Type.WASTE)).isEqualTo(0.0);
+    }
+
+    @Test
+    void returnsAllAssetTypesWithCostZeroWhenNoneAreAvailableInTheRepository() {
+        final List<Asset> allAssets = Collections.emptyList();
+        when(assetRepository.findAll()).thenReturn(allAssets);
+
+        final Map<Asset.Type, Double> assetTypeCostsMap = assetService.getSumOfCostsForAllAssetTypesInTheRepository();
+
+        assertThat(assetTypeCostsMap).hasSize(4);
+        assertThat(assetTypeCostsMap.get(Asset.Type.AGRICULTURE)).isEqualTo(0.0);
+        assertThat(assetTypeCostsMap.get(Asset.Type.TRANSPORT)).isEqualTo(0.0);
+        assertThat(assetTypeCostsMap.get(Asset.Type.CONSTRUCTION)).isEqualTo(0.0);
+        assertThat(assetTypeCostsMap.get(Asset.Type.WASTE)).isEqualTo(0.0);
+    }
+
+    private static List<Asset> getAllAssets() {
+        return Arrays.asList(
+                new Asset(1, "Asset 1", 50000, Asset.Type.AGRICULTURE),
+                new Asset(2, "Asset 2", 75000, Asset.Type.TRANSPORT),
+                new Asset(3, "Asset 3", 100000, Asset.Type.CONSTRUCTION)
+        );
     }
 }
