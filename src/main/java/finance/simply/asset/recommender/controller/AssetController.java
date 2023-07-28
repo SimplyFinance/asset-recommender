@@ -25,15 +25,7 @@ public class AssetController {
   @GetMapping
   public ResponseEntity<List<Asset>> getAssetsWithCostUnder(double maxCost) {
     final List<Asset> assets = assetService.getAssetsWithCostUnder(maxCost);
-    ResponseEntity<List<Asset>> response;
-
-    if(assets.isEmpty()) {
-      response = ResponseEntity.status(HttpStatus.NOT_FOUND).body(assets);
-    } else {
-      response = ResponseEntity.ok(assets);
-    }
-
-    return response;
+    return assets.isEmpty() ? ResponseEntity.status(HttpStatus.NOT_FOUND).body(assets) : ResponseEntity.ok(assets);
   }
 
   @GetMapping("/sum-for-types")
