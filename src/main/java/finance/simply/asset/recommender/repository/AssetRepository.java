@@ -13,4 +13,7 @@ public interface AssetRepository extends JpaRepository<Asset, Integer> {
 
     @Query("SELECT a FROM Asset a WHERE a.cost <= :maxCost")
     List<Asset> findByMaxCost(@Param("maxCost") double maxCost);
+
+    @Query("SELECT a FROM Asset a WHERE a.type = :assetType")
+    List<Asset> findByAssetType(@Param("assetType") Asset.Type assetType);
 }

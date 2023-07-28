@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,6 +34,7 @@ class AssetServiceImplTest {
     public void whenGettingAssetsWithCostUnderMaxCost_andAssetsFound_thenReturnsListOfAssets() {
         double maxCost = 55000;
         when(assetRepository.findByMaxCost(maxCost)).thenReturn(generateExampleAssets());
+
         final List<Asset> results = assetService.getAssetsWithCostUnder(maxCost);
 
         assertEquals(3, results.size());
@@ -46,6 +48,7 @@ class AssetServiceImplTest {
     public void whenGettingAssetsWithCostUnderMaxCost_andAssetsNotFound_thenReturnsEmptyList() {
         double maxCost = 25000;
         when(assetRepository.findByMaxCost(maxCost)).thenReturn(new ArrayList<>());
+
         final List<Asset> results = assetService.getAssetsWithCostUnder(maxCost);
 
         assertTrue(results.isEmpty());
@@ -53,7 +56,15 @@ class AssetServiceImplTest {
 
     @Test
     public void whenGettingSumOfAllAssetTypes_thenReturnsMapOfAssetTypesAndSumOfEachType() {
-        //TODO - Implement
+        when(assetRepository.findByAssetType(Asset.Type.AGRICULTURE)).thenReturn(generateExampleAgricultureAssets());
+        when(assetRepository.findByAssetType(Asset.Type.TRANSPORT)).thenReturn(generateExampleTransportAssets());
+        when(assetRepository.findByAssetType(Asset.Type.CONSTRUCTION)).thenReturn(new ArrayList<>());
+        when(assetRepository.findByAssetType(Asset.Type.WASTE)).thenReturn(new ArrayList<>());
+
+        final Map<Asset.Type, Double> results = assetService.getSumOfAllTypes();
+        assertEquals(4, results.size());
+        assertEquals(105000, results.get(Asset.Type.AGRICULTURE));
+        assertEquals(50000, results.get(Asset.Type.TRANSPORT));
     }
 
     private List<Asset> generateExampleAssets() {
@@ -61,6 +72,20 @@ class AssetServiceImplTest {
         assets.add(new Asset(1, "Tractor", 50000, Asset.Type.AGRICULTURE));
         assets.add(new Asset(2, "Baler", 55000, Asset.Type.AGRICULTURE));
         assets.add(new Asset(3, "Taxi 1", 20000, Asset.Type.TRANSPORT));
+        return assets;
+    }
+
+    private List<Asset> generateExampleAgricultureAssets() {
+        final List<Asset> assets = new ArrayList<>();
+        assets.add(new Asset(1, "Tractor", 50000, Asset.Type.AGRICULTURE));
+        assets.add(new Asset(2, "Baler", 55000, Asset.Type.AGRICULTURE));
+        return assets;
+    }
+
+    private List<Asset> generateExampleTransportAssets() {
+        final List<Asset> assets = new ArrayList<>();
+        assets.add(new Asset(3, "Taxi 1", 20000, Asset.Type.TRANSPORT));
+        assets.add(new Asset(4, "Taxi 2", 30000, Asset.Type.TRANSPORT));
         return assets;
     }
 

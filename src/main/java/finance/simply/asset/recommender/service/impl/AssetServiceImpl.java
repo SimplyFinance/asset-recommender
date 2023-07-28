@@ -6,6 +6,7 @@ import finance.simply.asset.recommender.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,26 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public Map<Asset.Type, Double> getSumOfAllTypes() {
-        //TODO - Implement
-        return null;
+        final Map<Asset.Type, Double> allAssetTypesMap = getMapOfAllAssetTypes();
+        return findAssetsByTypeAndSumCosts(allAssetTypesMap);
+    }
+
+    private Map<Asset.Type, Double> getMapOfAllAssetTypes() {
+        final Map<Asset.Type, Double> assetTypesMap = new HashMap<>();
+
+        for (Asset.Type type : Asset.Type.values()) {
+            assetTypesMap.put(type, 0.0);
+        }
+
+        return assetTypesMap;
+    }
+
+    private Map<Asset.Type, Double> findAssetsByTypeAndSumCosts(Map<Asset.Type, Double> assetTypeCostsMap) {
+        assetTypeCostsMap.forEach((type, sumOfCost) -> {
+            final List<Asset> assetsByType = assetRepository.findByAssetType(type);
+            assetsByType.forEach(asset -> assetTypeCostsMap.put(type,  assetTypeCostsMap.get(type) + asset.getCost()));
+        });
+
+        return assetTypeCostsMap;
     }
 }
